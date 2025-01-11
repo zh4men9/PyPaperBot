@@ -46,7 +46,7 @@ def saveFile(file_name, content, paper, dwn_source):
     paper.downloadedFrom = dwn_source
 
 
-def downloadPapers(papers, dwnl_dir, num_limit, SciHub_URL=None, SciDB_URL=None):
+def downloadPapers(papers, dwnl_dir, num_limit, SciHub_URL=None, SciDB_URL=None, Scholar_URL=None):  # Add Scholar_URL parameter
 
     NetInfo.SciHub_URL = SciHub_URL
     if NetInfo.SciHub_URL is None:
@@ -56,12 +56,12 @@ def downloadPapers(papers, dwnl_dir, num_limit, SciHub_URL=None, SciDB_URL=None)
 
     print("\nUsing Sci-Hub mirror {}".format(NetInfo.SciHub_URL))
     print("Using Sci-DB mirror {}".format(NetInfo.SciDB_URL))
-    print("You can use --scidb-mirror and --scidb-mirror to specify your're desired mirror URL\n")
-
+    print("You can use --scihub-mirror, --annas-archive-mirror, --scholar-mirror to specify your desired mirror URL\n")
     num_downloaded = 0
     paper_number = 1
     paper_files = []
     for p in papers:
+        print('Downloading paper: {}'.format(p))
         if p.canBeDownloaded() and (num_limit is None or num_downloaded < num_limit):
             print("Download {} of {} -> {}".format(paper_number, len(papers), p.title))
             paper_number += 1

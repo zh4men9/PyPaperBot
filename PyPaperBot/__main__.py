@@ -27,16 +27,19 @@ def checkVersion():
 
 def start(query, scholar_results, scholar_pages, dwn_dir, proxy, min_date=None, num_limit=None, num_limit_type=None,
           filter_jurnal_file=None, restrict=None, DOIs=None, SciHub_URL=None, chrome_version=None, cites=None,
-          use_doi_as_filename=False, SciDB_URL=None, skip_words=None):
+          use_doi_as_filename=False, SciDB_URL=None, skip_words=None, GoogleScholar_URL="https://sc.panda985.com"):  # Add google_scholar_url parameter
 
     if SciDB_URL is not None and "/scidb" not in SciDB_URL:
         SciDB_URL = urljoin(SciDB_URL, "/scidb/")
+        
+    if GoogleScholar_URL == None:
+        GoogleScholar_URL = "https://sc.panda985.com"
 
     to_download = []
     if DOIs is None:
         print("Query: {}".format(query))
         print("Cites: {}".format(cites))
-        to_download = ScholarPapersInfo(query, scholar_pages, restrict, min_date, scholar_results, chrome_version, cites, skip_words)
+        to_download = ScholarPapersInfo(query, scholar_pages, restrict, min_date, scholar_results, chrome_version, cites, skip_words, GoogleScholar_URL)  # Add GoogleScholar_URL parameter
     else:
         print("Downloading papers from DOIs\n")
         num = 1
@@ -64,7 +67,7 @@ def start(query, scholar_results, scholar_pages, dwn_dir, proxy, min_date=None, 
         if num_limit_type is not None and num_limit_type == 1:
             to_download.sort(key=lambda x: int(x.cites_num) if x.cites_num is not None else 0, reverse=True)
 
-        downloadPapers(to_download, dwn_dir, num_limit, SciHub_URL, SciDB_URL)
+        downloadPapers(to_download, dwn_dir, num_limit, SciHub_URL, SciDB_URL)  # Add GoogleScholar_URL parameter
 
     Paper.generateReport(to_download, dwn_dir + "result.csv")
     Paper.generateBibtex(to_download, dwn_dir + "bibtex.bib")
@@ -75,7 +78,7 @@ def main():
         """PyPaperBot is a Python tool for downloading scientific papers using Google Scholar, Crossref and SciHub.
         -Join the telegram channel to stay updated --> https://t.me/pypaperbotdatawizards <--
         -If you like this project, you can share a cup of coffee at --> https://www.paypal.com/paypalme/ferru97 <-- :)\n""")
-    time.sleep(4)
+    # time.sleep(4)
     parser = argparse.ArgumentParser(
         description='PyPaperBot is python tool to search and dwonload scientific papers using Google Scholar, Crossref and SciHub')
     parser.add_argument('--query', type=str, default=None,
@@ -116,6 +119,8 @@ def main():
                         help='First three digits of the chrome version installed on your machine. If provided, selenium will be used for scholar search. It helps avoid bot detection but chrome must be installed.')
     parser.add_argument('--use-doi-as-filename', action='store_true', default=False,
                         help='Use DOIs as output file names')
+    parser.add_argument('--scholar-mirror', type=str, default="https://sc.panda985.com",  # Add this line
+                        help='Mirror for downloading papers from Google Scholar. If not set, https://sc.panda985.com is used')
     args = parser.parse_args()
 
     if args.single_proxy is not None:
@@ -202,7 +207,7 @@ def main():
 
     start(args.query, args.scholar_results, scholar_pages, dwn_dir, proxy, args.min_year , max_dwn, max_dwn_type ,
           args.journal_filter, args.restrict, DOIs, args.scihub_mirror, args.selenium_chrome_version, args.cites,
-          args.use_doi_as_filename, args.annas_archive_mirror, args.skip_words)
+          args.use_doi_as_filename, args.annas_archive_mirror, args.skip_words, args.scholar_mirror)  # Add args.scholar_mirror parameter   
 
 if __name__ == "__main__":
     checkVersion()

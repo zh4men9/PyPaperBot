@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from .HTMLparsers import schoolarParser
 from .Crossref import getPapersInfo
 from .NetInfo import NetInfo
-
+from urllib.parse import urljoin
 
 def waithIPchange():
     while True:
@@ -76,9 +76,8 @@ def parseSkipList(skip_words):
             output_param += '+-' + skip_word
     return output_param
 
-
-def ScholarPapersInfo(query, scholar_pages, restrict, min_date=None, scholar_results=10, chrome_version=None, cites=None, skip_words=None):
-    url = r"https://scholar.google.com/scholar?hl=en&as_vis=1&as_sdt=1,5&start=%d"
+def ScholarPapersInfo(query, scholar_pages, restrict, min_date=None, scholar_results=10, chrome_version=None, cites=None, skip_words=None, scholar_url="https://sc.panda985.com"):
+    url = urljoin(scholar_url, "/scholar?hl=en&as_vis=1&as_sdt=1,5&start=%d")
     if query:
         if len(query) > 7 and (query.startswith("http://") or query.startswith("https://")):
             url = query
